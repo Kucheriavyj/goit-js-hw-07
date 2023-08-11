@@ -1,13 +1,11 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const refs = {
-  divGalleryEl: document.querySelector(".gallery"),
-};
 
-refs.divGalleryEl.append(...createGallery(galleryItems));
+const galleryEl = document.querySelector(".gallery");
 
-refs.divGalleryEl.addEventListener("click", onOpenModalImage);
+galleryEl.addEventListener("click", onOpenModalImage);
+
 
 function onOpenModalImage(event) {
   if (event.target.nodeName !== "IMG") return;
@@ -15,36 +13,33 @@ function onOpenModalImage(event) {
   event.preventDefault();
 
   const instance = basicLightbox.create(`
-    <img src=${event.target.dataset.source} width=1280>
-`);
+    <img src=${event.target.dataset.source} width=1280>`,
+
+    {onShow: (instance) => document.addEventListener("keydown", makeCloseEscape),
+    onClose: (instance) => document.removeEventListener("keydown", makeCloseEscape)
+  });
 
   instance.show();
 
-  document.addEventListener("keydown", (event) => {
+  function makeCloseEscape(event) {
     if (event.code !== "Escape") return;
     instance.close();
-  });
-}
+  }
+};
 
-function createGallery(arrOfGallaryItems) {
-  return arrOfGallaryItems.map((galleryItem) => {
-    const galleryItemEl = document.createElement("div");
-    const galleryLinkEl = document.createElement("a");
-    const galleryImageEl = document.createElement("img");
+function createGallery(galleryItems) {
+  return galleryItems.map((galleryItem) => 
+    `<li class="gallery__item">
+    <a class="gallery__link" href="${galleryItem.original}">
+      <img
+      class="gallery__image"
+      src="${galleryItem.preview}"
+      data-source="${galleryItem.original}"
+      alt="${galleryItem.description}"
+      />
+    </a>
+  </li>`).join("");
+  };
 
-    galleryImageEl.classList.add("gallery__image");
-    galleryImageEl.setAttribute("src", galleryItem.preview);
-    galleryImageEl.setAttribute("alt", galleryItem.description);
-    galleryImageEl.dataset.source = galleryItem.original;
-
-    galleryLinkEl.classList.add("gallery__link");
-    galleryLinkEl.setAttribute("href", galleryItem.original);
-
-    galleryItemEl.classList.add("gallery__item");
-
-    galleryLinkEl.append(galleryImageEl);
-    galleryItemEl.append(galleryLinkEl);
-
-    return galleryItemEl;
-  });
-}
+  const addGalleryMarkup = createGallery(galleryItems);
+  galleryEl.innerHTML = addGalleryMarkup;

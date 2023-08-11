@@ -1,34 +1,28 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const refs = {
-  divGalleryEl: document.querySelector(".gallery"),
-};
+const galleryEl = document.querySelector(".gallery");
 
-refs.divGalleryEl.append(...createGallery(galleryItems));
 
-function createGallery(arrOfGallaryItems) {
-  return arrOfGallaryItems.map((galleryItem) => {
-    const galleryLinkEl = document.createElement("a");
-    const galleryImageEl = document.createElement("img");
+function createGallery(galleryItems) {
+  return galleryItems.map((galleryItem) => 
+    `<li class="gallery__item">
+    <a class="gallery__link" href="${galleryItem.original}">
+      <img
+      class="gallery__image"
+      src="${galleryItem.preview}"
+      data-source="${galleryItem.original}"
+      alt="${galleryItem.description}"
+      />
+    </a>
+  </li>`).join("");
+  };
 
-    galleryImageEl.classList.add("gallery__image");
-    galleryImageEl.setAttribute("src", galleryItem.preview);
-    galleryImageEl.setAttribute("alt", galleryItem.description);
+  const addGalleryMarkup = createGallery(galleryItems);
+  galleryEl.innerHTML = addGalleryMarkup;
 
-    galleryLinkEl.classList.add("gallery__item");
-    galleryLinkEl.setAttribute("href", galleryItem.original);
-
-    galleryLinkEl.append(galleryImageEl);
-
-    return galleryLinkEl;
-  });
-}
-
-let gallery = new SimpleLightbox(".gallery a", {
+const gallery = new SimpleLightbox(".gallery a", {
   captionPosition: "bottom",
   captionDelay: "250",
   captionsData: "alt",
 });
-
-gallery.on("show.simplelightbox", function () {});

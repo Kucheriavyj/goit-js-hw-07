@@ -18,8 +18,8 @@ function createGallery(galleryItems) {
   </li>`).join("");
   };
 
-  const addGalleryMarkup = createGallery(galleryItems);
-  galleryEl.innerHTML = addGalleryMarkup;
+const addGalleryMarkup = createGallery(galleryItems);
+galleryEl.innerHTML = addGalleryMarkup;
 
 const gallery = new SimpleLightbox(".gallery a", {
   captionPosition: "bottom",
